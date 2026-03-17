@@ -4,7 +4,13 @@ const PROJECTS = [
   {
     title: 'CUVAS Admission System',
     description: 'University admission management system for CUVAS — handling applications, documents, and admissions workflow.',
-    tags: ['React', 'Laravel', 'Node.js', 'Database'],
+    tags: ['Laravel', 'PHP', 'Xampp', 'CSS', 'JavaScript'],
+    highlight: true,
+  },
+  {
+    title: 'Development of E-Commerce Website',
+    description: 'A fully functional e-commerce web application built with React.js for the frontend, featuring a seamless shopping experience with product browsing, cart management, and order processing capabilities.',
+    tags: ['React', 'Tailwind CSS', 'CSS3 ', 'React Router v6 - Navigation', 'JavaScript', 'React Hooks'],
     highlight: true,
   },
 ];

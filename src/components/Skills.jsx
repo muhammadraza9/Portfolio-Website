@@ -3,10 +3,15 @@ import { motion } from 'framer-motion';
 const SKILLS = [
   'HTML',
   'CSS',
+  'Bootstrap',
   'JavaScript',
   'React',
+  'PHP',
   'Laravel',
   'Node.js',
+  'Problem Solving',
+  'Git & GitHub',
+  'VS Code',
 ];
 
 const container = {
