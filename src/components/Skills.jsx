@@ -12,6 +12,7 @@ const SKILLS = [
   'Problem Solving',
   'Git & GitHub',
   'VS Code',
+  'Cursor',
 ];
 
 const container = {
