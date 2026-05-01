@@ -1,18 +1,28 @@
 import { motion } from 'framer-motion';
 
 const SKILLS = [
-  'HTML',
-  'CSS',
-  'Bootstrap',
+   'React.js',
+  'Next.js',
   'JavaScript',
-  'React',
+  'TypeScript',
+  'HTML5',
+  'CSS3',
+  'Tailwind CSS',
+  'Bootstrap',
+  'Ant Design',
+  'Redux Toolkit',
   'PHP',
   'Laravel',
-  'Node.js',
-  'Problem Solving',
+  'MySQL',
+  'MongoDB',
+  'Prisma ORM',
+  'REST API Integration',
+  'Responsive Design',
+  'Context API',
   'Git & GitHub',
   'VS Code',
-  'Cursor',
+  'npm',
+  'Problem Solving'
 ];
 
 const container = {

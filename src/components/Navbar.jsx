@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const navLinks = [
   { href: '#hero', label: 'Home' },
   { href: '#about', label: 'About' },
+  { href: '#experience', label: 'Experience' },
   { href: '#skills', label: 'Skills' },
   { href: '#projects', label: 'Projects' },
   { href: '#contact', label: 'Contact' },
@@ -21,7 +22,7 @@ export default function Navbar() {
     >
       <nav className="max-w-6xl mx-auto flex items-center justify-between glass-card px-6 py-3">
         <a href="#hero" className="text-lg font-semibold text-white">
-          Rao Huzaifa Akbar
+          Muhammad Raza
         </a>
 
         {/* Desktop nav */}

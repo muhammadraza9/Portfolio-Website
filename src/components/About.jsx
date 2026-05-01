@@ -25,19 +25,19 @@ export default function About() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <img
-            src="/profile.png"
-            alt="Huzaifa Akbar"
+          {/* <img
+            src="/images/IMG_2706.JPG"
+            alt="Raza"
             className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl object-cover object-top ring-2 ring-white/10 flex-shrink-0"
-          />  
+          />   */}
           <div>
             <p className="text-white/80 leading-relaxed mb-6">
-              I&apos;m a Web Developer based in Lahore, focused on building clean, performant web applications
-              with modern technologies.
+              Frontend Developer with  experience in building responsive and scalable web applications using React.js, Next.js, JavaScript, and TypeScript. Skilled in creating clean, reusable component-based architectures with modern UI frameworks and libraries. Focused on performance, user experience, and writing maintainable code. Passionate about building real-world projects and continuously improving development skills.
+
             </p>
             <div className="space-y-2 text-white/70">
               <p><span className="text-primary font-medium">Education:</span> BS Computer Science (2021–2025)</p>
-              <p><span className="text-primary font-medium">Location:</span> Lahore</p>
+              <p><span className="text-primary font-medium">Location:</span> Islamabad</p>
             </div>
           </div>
         </motion.div>

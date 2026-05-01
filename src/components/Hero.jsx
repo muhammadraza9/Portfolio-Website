@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const TITLE = 'Web Developer';
+const TITLE = 'Frontend Developer';
 const TYPING_SPEED = 120;
 const PAUSE_AT_END = 2000;
 
@@ -44,7 +44,7 @@ export default function Hero() {
         >
           <img
             src="/profile.png"
-            alt="Huzaifa Akbar"
+            alt="Raza"
             className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl object-cover object-top ring-2 ring-white/10 shadow-2xl"
           />
         </motion.div>
@@ -55,7 +55,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          Hi, I&apos;m <span className="text-primary">Huzaifa Akbar</span>
+          Hi, I&apos;m <span className="text-primary"> Muhammad Raza</span>
         </motion.h1>
         <motion.p
           className="text-xl sm:text-2xl text-white/80 mb-2 min-h-[2rem] font-medium"
@@ -72,7 +72,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Lahore, Pakistan
+          Islamabad, Pakistan
         </motion.p>
         <motion.div
           className="flex flex-wrap gap-4 justify-center md:justify-start"
@@ -87,11 +87,11 @@ export default function Hero() {
             Get in Touch
           </a>
           <a
-            href="/Huzaifa_Akbar_CV.pdf"
-            download="Huzaifa_Akbar_CV.pdf"
+            href="/Muhammad Raza. Resume.pdf"
+            download="Muhammad Raza. Resume.pdf"
             className="px-6 py-3 rounded-xl glass-card border border-white/20 hover:border-primary/50 text-white font-medium transition-colors"
           >
-            Download CV
+            Download Resume
           </a>
         </motion.div>
         </div>

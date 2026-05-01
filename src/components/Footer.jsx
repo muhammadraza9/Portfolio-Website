@@ -11,7 +11,7 @@ export default function Footer() {
       viewport={{ once: true }}
     >
       <div className="max-w-4xl mx-auto text-center text-white/50 text-sm">
-        © {year} Huzaifa Akbar. All rights reserved.
+        © {year} Muhammad Raza. All rights reserved.
       </div>
     </motion.footer>
   );
