@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Huzaifa Akbar — Portfolio
 
 Professional portfolio with a **smoke/cursor effect**, dark theme, and smooth animations.
@@ -35,3 +36,7 @@ The CV is at `public/Huzaifa_Akbar_CV.pdf`. The "Download CV" button in the Hero
 - React 19 + Vite 8
 - Tailwind CSS 3
 - Framer Motion
+=======
+# Portfolio-Website
+portfolio website
+>>>>>>> b0f8dace7c7af5bcf31d98fdd8547c1d4811a750
