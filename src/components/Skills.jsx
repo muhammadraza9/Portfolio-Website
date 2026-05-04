@@ -11,8 +11,6 @@ const SKILLS = [
   'Bootstrap',
   'Ant Design',
   'Redux Toolkit',
-  'PHP',
-  'Laravel',
   'MySQL',
   'MongoDB',
   'Prisma ORM',

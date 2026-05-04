@@ -13,6 +13,15 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const handleNavClick = (href) => {
+    setMobileOpen(false);
+    setTimeout(() => {
+      const id = href.replace('#', '');
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+  };
+
   return (
     <motion.header
       className="fixed top-0 left-0 right-0 z-50 py-4 px-6"
@@ -21,21 +30,23 @@ export default function Navbar() {
       transition={{ duration: 0.5, delay: 0.8 }}
     >
       <nav className="max-w-6xl mx-auto flex items-center justify-between glass-card px-6 py-3">
-        <a href="#hero" className="text-lg font-semibold text-white">
+        <button
+          onClick={() => handleNavClick('#hero')}
+          className="text-lg font-semibold text-white bg-transparent border-none cursor-pointer"
+        >
           Muhammad Raza
-        </a>
+        </button>
 
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-white/80 hover:text-primary transition-colors text-sm font-medium"
-                onClick={() => setMobileOpen(false)}
+              <button
+                onClick={() => handleNavClick(link.href)}
+                className="text-white/80 hover:text-primary transition-colors text-sm font-medium bg-transparent border-none cursor-pointer"
               >
                 {link.label}
-              </a>
+              </button>
             </li>
           ))}
         </ul>
@@ -61,22 +72,22 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4 glass-card rounded-2xl overflow-hidden"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4 glass-card rounded-2xl"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
+            style={{ zIndex: 9999 }}
           >
             <ul className="py-4 px-4 flex flex-col gap-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-lg transition-colors"
-                    onClick={() => setMobileOpen(false)}
+                  <button
+                    onClick={() => handleNavClick(link.href)}
+                    className="w-full text-left py-3 px-4 text-white/90 hover:bg-white/10 rounded-lg transition-colors bg-transparent border-none cursor-pointer text-base"
                   >
                     {link.label}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
