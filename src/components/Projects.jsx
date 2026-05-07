@@ -7,6 +7,8 @@ const PROJECTS = [
     tags: ['Next.js', 'React.js', 'Tailwind CSS', 'Ant Design'],
     highlight: true,
     image: '/images/easy-home.png',
+    liveLink: '',
+    githubLink: ''
   },
   {
     title: '📰 News App',
@@ -17,56 +19,68 @@ Designed with a clean and responsive UI for all devices.`,
     tags: ['React.js', 'Bootstrap', 'REST API'],
     highlight: true,
     image: '/images/news-app.png',
+    liveLink: 'https://news-app-react-project-iota.vercel.app/',
+    githubLink: ''
   },
   {
     title: '📝 iNotebook',
-    description: `A full-stack CRUD note-taking application with secure data storage using   MongoDB.
-    Users can create, update, delete, and organize notes efficiently in one place.
-    It includes authentication for secure access and personalized note management.
-    Built for fast performance with a clean and user-friendly interface.`,
+    description: `A full-stack CRUD note-taking application with secure data storage using MongoDB.
+Users can create, update, delete, and organize notes efficiently in one place.
+It includes authentication for secure access and personalized note management.
+Built for fast performance with a clean and user-friendly interface.`,
     tags: ['React.js', 'Node.js', 'MongoDB'],
     highlight: true,
     image: '/images/inotebook.png',
+    liveLink: '',
+    githubLink: ''
   },
   {
     title: '🛒 ReduxApp',
     description: `A shopping cart application built using Redux Toolkit for efficient state management.
-    It allows users to add, remove, and update products with real-time price calculations.
-    The app demonstrates scalable architecture with centralized state handling.
-    Designed with a responsive and user-friendly interface for smooth shopping experience.`,
+It allows users to add, remove, and update products with real-time price calculations.
+The app demonstrates scalable architecture with centralized state handling.
+Designed with a responsive and user-friendly interface for smooth shopping experience.`,
     tags: ['React.js', 'Redux Toolkit'],
     highlight: true,
     image: '/images/redux.png',
+    liveLink: '',
+    githubLink: ''
   },
   {
     title: '🎓 CUVAS Admission System',
     description: `A student admission management system designed to handle application records efficiently.
-    It allows users to submit, track, and manage admission data in a structured way.
-    The system includes validation and organized workflows for smooth processing.
-    Built with backend integration and database support for reliable data handling.`,
+It allows users to submit, track, and manage admission data in a structured way.
+The system includes validation and organized workflows for smooth processing.
+Built with backend integration and database support for reliable data handling.`,
     tags: ['Laravel', 'MySQL'],
     highlight: true,
     image: '/images/admission.png',
+    liveLink: '',
+    githubLink: ''
   },
   {
     title: '📝 TextUtils',
-    description:  `A simple and efficient text utility tool for formatting and analyzing text.
-    It provides features like uppercase, lowercase conversion, and word/character counting.
-    Users can quickly manipulate text with instant results in a clean interface.
-    Built for fast performance with a lightweight and responsive design.`,
+    description: `A simple and efficient text utility tool for formatting and analyzing text.
+It provides features like uppercase, lowercase conversion, and word/character counting.
+Users can quickly manipulate text with instant results in a clean interface.
+Built for fast performance with a lightweight and responsive design.`,
     tags: ['React.js'],
     highlight: true,
     image: '/images/textutils.png',
+    liveLink: 'https://text-utils-delta-blush.vercel.app/',
+    githubLink: ''
   },
   {
     title: '📚 Book Hub',
     description: `A personal book management application for organizing and storing book collections.
-    Users can add, edit, and delete books to keep their library well organized.
-    It uses local storage to persist data without requiring a backend server.
-    Designed with a simple and clean interface for easy and fast usage.`,
+Users can add, edit, and delete books to keep their library well organized.
+It uses local storage to persist data without requiring a backend server.
+Designed with a simple and clean interface for easy and fast usage.`,
     tags: ['React.js'],
     highlight: true,
     image: '/images/bookhub.png',
+    liveLink: 'https://book-hub-hazel.vercel.app/',
+    githubLink: ''
   },
 ];
 
@@ -75,7 +89,6 @@ export default function Projects() {
     <section id="projects" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
 
-        {/* TITLE */}
         <motion.h2
           className="text-4xl font-bold text-white mb-12 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -85,7 +98,6 @@ export default function Projects() {
           My Proj<span className="text-primary">ects</span>
         </motion.h2>
 
-        {/* GRID CARDS */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
           {PROJECTS.map((project, i) => (
@@ -100,14 +112,12 @@ export default function Projects() {
               transition={{ delay: i * 0.1 }}
             >
 
-              {/* IMAGE */}
               <img
                 src={project.image}
                 alt={project.title}
                 className="w-full h-44 object-cover"
               />
 
-              {/* CONTENT */}
               <div className="p-5">
 
                 <h3 className="text-lg font-semibold text-white mb-2">
@@ -118,7 +128,6 @@ export default function Projects() {
                   {project.description}
                 </p>
 
-                {/* TAGS */}
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
                     <span
@@ -128,6 +137,33 @@ export default function Projects() {
                       {tag}
                     </span>
                   ))}
+                </div>
+
+                {/* BUTTONS */}
+                <div className="flex gap-3 mt-4">
+
+                  {project.liveLink && (
+                    <a
+                      href={project.liveLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1 text-sm rounded-lg bg-green-500 text-white hover:bg-green-600"
+                    >
+                      Live Demo
+                    </a>
+                  )}
+
+                  {project.githubLink && (
+                    <a
+                      href={project.githubLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1 text-sm rounded-lg bg-gray-700 text-white hover:bg-gray-800"
+                    >
+                      GitHub
+                    </a>
+                  )}
+
                 </div>
 
               </div>
