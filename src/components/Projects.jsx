@@ -23,30 +23,6 @@ Designed with a clean and responsive UI for all devices.`,
     githubLink: ''
   },
   {
-    title: '📝 iNotebook',
-    description: `A full-stack CRUD note-taking application with secure data storage using MongoDB.
-Users can create, update, delete, and organize notes efficiently in one place.
-It includes authentication for secure access and personalized note management.
-Built for fast performance with a clean and user-friendly interface.`,
-    tags: ['React.js', 'Node.js', 'MongoDB'],
-    highlight: true,
-    image: '/images/inotebook.png',
-    liveLink: '',
-    githubLink: ''
-  },
-  {
-    title: '🛒 ReduxApp',
-    description: `A shopping cart application built using Redux Toolkit for efficient state management.
-It allows users to add, remove, and update products with real-time price calculations.
-The app demonstrates scalable architecture with centralized state handling.
-Designed with a responsive and user-friendly interface for smooth shopping experience.`,
-    tags: ['React.js', 'Redux Toolkit'],
-    highlight: true,
-    image: '/images/redux.png',
-    liveLink: '',
-    githubLink: ''
-  },
-  {
     title: '🎓 CUVAS Admission System',
     description: `A student admission management system designed to handle application records efficiently.
 It allows users to submit, track, and manage admission data in a structured way.
@@ -147,7 +123,7 @@ export default function Projects() {
                       href={project.liveLink}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1 text-sm rounded-lg bg-green-500 text-white hover:bg-green-600"
+                      className="px-3 py-1 text-sm rounded-lg bg-gray-500 text-white hover:bg-gray-600"
                     >
                       Live Demo
                     </a>
