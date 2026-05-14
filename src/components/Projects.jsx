@@ -7,7 +7,7 @@ const PROJECTS = [
     tags: ['Next.js', 'React.js', 'Tailwind CSS', 'Ant Design'],
     highlight: true,
     image: '/images/easy-home.png',
-    liveLink: '',
+    liveLink: 'https://easy-homes-kohl.vercel.app/',
     githubLink: ''
   },
   {
@@ -123,7 +123,7 @@ export default function Projects() {
                       href={project.liveLink}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1 text-sm rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+                      className="px-3 py-1 text-sm rounded-lg bg-green-500 text-white hover:bg-green-800"
                     >
                       Live Demo
                     </a>
