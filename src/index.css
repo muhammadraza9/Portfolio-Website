@@ -7,26 +7,24 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    position: relative;
+    /* position: relative; ← REMOVED - breaks fixed positioning */
   }
   body {
     @apply bg-dark text-white font-sans antialiased;
     background-color: #0a0a0f;
-    position: relative;
+    /* position: relative; ← REMOVED - breaks fixed positioning */
   }
   #root {
-    position: relative;
+    /* position: relative; ← REMOVED - breaks fixed positioning */
   }
 }
 
-/* Glassmorphism card utility */
 @layer components {
   .glass-card {
     @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl;
   }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -41,7 +39,6 @@
   background: #8b5cf6;
 }
 
-/* Hide default cursor when custom cursor is active (desktop only) */
 .custom-cursor-active,
 .custom-cursor-active * {
   cursor: none !important;
