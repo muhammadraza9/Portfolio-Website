@@ -23,7 +23,7 @@ Designed with a clean and responsive UI for all devices.`,
     githubLink: ''
   },
   {
-    title: '🎓 CUVAS Admission System',
+    title: '🎓 CUVAS Admission System (FYP)',
     description: `A student admission management system designed to handle application records efficiently.
 It allows users to submit, track, and manage admission data in a structured way.
 The system includes validation and organized workflows for smooth processing.
