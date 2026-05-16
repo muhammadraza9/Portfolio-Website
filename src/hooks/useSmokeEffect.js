@@ -17,7 +17,7 @@ function isLowEndDevice() {
 
 export function useSmokeEffect() {
   const canvasRef = useRef(null);
-  const mouseRef = useRef({ x: -200, y: -200, vx: 0, vy: 0, lastX: -200, lastY: -200 });
+  const mouseRef = useRef(null); // null jab tak move na ho
   const particlesRef = useRef([]);
   const ambientRef = useRef([]);
   const rafRef = useRef(null);
@@ -63,22 +63,44 @@ export function useSmokeEffect() {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    // Fix: use dpr=1 always so coordinates match clientX/Y exactly
-    const dpr = 1;
+
+    // Canvas size = window size, no DPR scaling
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let width = canvas.width;
+    let height = canvas.height;
 
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
-      ctx.scale(dpr, dpr);
+      canvas.width = width;
+      canvas.height = height;
     };
-    resize();
     window.addEventListener('resize', resize);
+
+    // Mouse move — seedha clientX/Y canvas coordinates hain
+    const handleMove = (e) => {
+      const now = performance.now();
+      if (now - lastThrottleRef.current < THROTTLE_MS) return;
+      lastThrottleRef.current = now;
+
+      const x = e.clientX;
+      const y = e.clientY;
+
+      if (mouseRef.current === null) {
+        mouseRef.current = { x, y, vx: 0, vy: 0, lastX: x, lastY: y };
+      } else {
+        mouseRef.current.vx = x - mouseRef.current.lastX;
+        mouseRef.current.vy = y - mouseRef.current.lastY;
+        mouseRef.current.lastX = mouseRef.current.x;
+        mouseRef.current.lastY = mouseRef.current.y;
+        mouseRef.current.x = x;
+        mouseRef.current.y = y;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMove, { passive: true });
 
     const draw = () => {
       timeRef.current += 0.016;
@@ -86,11 +108,7 @@ export function useSmokeEffect() {
 
       ctx.clearRect(0, 0, width, height);
 
-      const { x: mx, y: my, vx, vy } = mouseRef.current;
-      const vxClamp = Math.max(-MAX_VEL, Math.min(MAX_VEL, vx));
-      const vyClamp = Math.max(-MAX_VEL, Math.min(MAX_VEL, vy));
-
-      // ---- Layer 1: Ambient floating orbs ----
+      // ---- Ambient orbs ----
       const orbs = ambientRef.current;
       for (let i = 0; i < orbs.length; i++) {
         const o = orbs[i];
@@ -108,68 +126,56 @@ export function useSmokeEffect() {
         ctx.fill();
       }
 
-      // ---- Layer 2: Cursor brush / dust ----
-      const particles = particlesRef.current;
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        if (p.life <= 0) {
-          p.x = mx + (Math.random() - 0.5) * 70;
-          p.y = my + (Math.random() - 0.5) * 70;
-          p.vx = vxClamp * VELOCITY_MULTIPLIER + (Math.random() - 0.5) * 0.3;
-          p.vy = vyClamp * VELOCITY_MULTIPLIER + (Math.random() - 0.5) * 0.3;
-          p.life = p.maxLife;
+      // ---- Cursor smoke — sirf tab jab mouse move hua ho ----
+      if (mouseRef.current !== null) {
+        const { x: mx, y: my, vx, vy } = mouseRef.current;
+        const vxClamp = Math.max(-MAX_VEL, Math.min(MAX_VEL, vx));
+        const vyClamp = Math.max(-MAX_VEL, Math.min(MAX_VEL, vy));
+
+        const particles = particlesRef.current;
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          if (p.life <= 0) {
+            p.x = mx + (Math.random() - 0.5) * 70;
+            p.y = my + (Math.random() - 0.5) * 70;
+            p.vx = vxClamp * VELOCITY_MULTIPLIER + (Math.random() - 0.5) * 0.3;
+            p.vy = vyClamp * VELOCITY_MULTIPLIER + (Math.random() - 0.5) * 0.3;
+            p.life = p.maxLife;
+          }
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= p.decay;
+          p.vy *= p.decay;
+          p.life--;
+
+          const lifeT = p.life / p.maxLife;
+          const alpha = (lifeT * lifeT) * 0.2;
+          const len = Math.min(80, 20 + Math.hypot(p.vx, p.vy) * 2);
+          const r = p.size * (0.4 + 0.6 * lifeT);
+          const angle = Math.atan2(p.vy, p.vx);
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(angle);
+          const eg = ctx.createRadialGradient(0, 0, 0, len * 0.5, 0, len);
+          eg.addColorStop(0, `rgba(220, 220, 240, ${alpha})`);
+          eg.addColorStop(0.6, `rgba(200, 200, 230, ${alpha * 0.4})`);
+          eg.addColorStop(1, 'rgba(200, 200, 230, 0)');
+          ctx.fillStyle = eg;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, len, r, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
         }
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vx *= p.decay;
-        p.vy *= p.decay;
-        p.life--;
-
-        const lifeT = p.life / p.maxLife;
-        const alpha = (lifeT * lifeT) * 0.2;
-        const len = Math.min(80, 20 + Math.hypot(p.vx, p.vy) * 2);
-        const r = p.size * (0.4 + 0.6 * lifeT);
-        const angle = Math.atan2(p.vy, p.vx);
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(angle);
-        const eg = ctx.createRadialGradient(0, 0, 0, len * 0.5, 0, len);
-        eg.addColorStop(0, `rgba(220, 220, 240, ${alpha})`);
-        eg.addColorStop(0.6, `rgba(200, 200, 230, ${alpha * 0.4})`);
-        eg.addColorStop(1, 'rgba(200, 200, 230, 0)');
-        ctx.fillStyle = eg;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, len, r, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
       }
 
       rafRef.current = requestAnimationFrame(draw);
     };
     rafRef.current = requestAnimationFrame(draw);
 
-    const handleMove = (e) => {
-      const now = performance.now();
-      if (now - lastThrottleRef.current < THROTTLE_MS) return;
-      lastThrottleRef.current = now;
-      const clientX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
-      const clientY = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
-      mouseRef.current.vx = clientX - mouseRef.current.lastX;
-      mouseRef.current.vy = clientY - mouseRef.current.lastY;
-      mouseRef.current.lastX = clientX;
-      mouseRef.current.lastY = clientY;
-      mouseRef.current.x = clientX;
-      mouseRef.current.y = clientY;
-    };
-
-    window.addEventListener('mousemove', handleMove, { passive: true });
-    window.addEventListener('touchmove', handleMove, { passive: true });
-
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('touchmove', handleMove);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
