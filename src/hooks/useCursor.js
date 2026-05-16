@@ -1,22 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 
-const LERP = 0.12;
+const LERP = 0.15;
 const TRAIL_LENGTH = 8;
 const MAGNET_STRENGTH = 0.35;
 const MAGNET_RADIUS = 120;
 const HOVER_SELECTORS = 'a[href], button, [role="button"], .glass-card';
 
 export function useCursor() {
-  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const [pos, setPos] = useState({ x: -500, y: -500 });
   const [trail, setTrail] = useState([]);
   const [isHover, setIsHover] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  const target = useRef({ x: -100, y: -100 });
-  const current = useRef({ x: -100, y: -100 });
+  const target = useRef(null);
+  const current = useRef(null);
   const magnetTarget = useRef(null);
   const isHoverRef = useRef(false);
-  const visibleRef = useRef(false);
   const trailRef = useRef([]);
   const rafRef = useRef(null);
 
@@ -25,17 +24,23 @@ export function useCursor() {
     if (isTouch()) return;
 
     const handleMove = (e) => {
-      target.current = { x: e.clientX, y: e.clientY };
-      if (!visibleRef.current) {
-        visibleRef.current = true;
-        setVisible(true);
+      const x = e.clientX;
+      const y = e.clientY;
+
+      // Pehli baar — seedha set karo, LERP mat karo
+      if (target.current === null) {
+        target.current = { x, y };
+        current.current = { x, y };
+        setPos({ x, y });
+      } else {
+        target.current = { x, y };
       }
+
+      setVisible(true);
     };
 
     const handleLeave = () => {
-      visibleRef.current = false;
       setVisible(false);
-      magnetTarget.current = null;
     };
 
     const handleOver = (e) => {
@@ -62,28 +67,32 @@ export function useCursor() {
     };
 
     const animate = () => {
-      const { x: tx, y: ty } = target.current;
-      const c = current.current;
-      let dx = tx - c.x;
-      let dy = ty - c.y;
+      if (current.current !== null && target.current !== null) {
+        const { x: tx, y: ty } = target.current;
+        const c = current.current;
+        let dx = tx - c.x;
+        let dy = ty - c.y;
 
-      const magnet = magnetTarget.current;
-      if (magnet && isHoverRef.current) {
-        const toCenterX = magnet.x - c.x;
-        const toCenterY = magnet.y - c.y;
-        const dist = Math.hypot(toCenterX, toCenterY);
-        if (dist < MAGNET_RADIUS && dist > 0) {
-          const pull = (1 - dist / MAGNET_RADIUS) * MAGNET_STRENGTH;
-          dx += toCenterX * pull;
-          dy += toCenterY * pull;
+        const magnet = magnetTarget.current;
+        if (magnet && isHoverRef.current) {
+          const toCenterX = magnet.x - c.x;
+          const toCenterY = magnet.y - c.y;
+          const dist = Math.hypot(toCenterX, toCenterY);
+          if (dist < MAGNET_RADIUS && dist > 0) {
+            const pull = (1 - dist / MAGNET_RADIUS) * MAGNET_STRENGTH;
+            dx += toCenterX * pull;
+            dy += toCenterY * pull;
+          }
         }
+
+        c.x += dx * LERP;
+        c.y += dy * LERP;
+
+        trailRef.current = [{ x: c.x, y: c.y }, ...trailRef.current].slice(0, TRAIL_LENGTH);
+        setPos({ x: c.x, y: c.y });
+        setTrail(trailRef.current.slice(1));
       }
 
-      c.x += dx * LERP;
-      c.y += dy * LERP;
-      trailRef.current = [{ x: c.x, y: c.y }, ...trailRef.current].slice(0, TRAIL_LENGTH);
-      setPos({ x: c.x, y: c.y });
-      setTrail(trailRef.current.slice(1));
       rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
