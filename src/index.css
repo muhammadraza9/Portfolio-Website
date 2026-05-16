@@ -7,15 +7,10 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* position: relative; ← REMOVED - breaks fixed positioning */
   }
   body {
     @apply bg-dark text-white font-sans antialiased;
     background-color: #0a0a0f;
-    /* position: relative; ← REMOVED - breaks fixed positioning */
-  }
-  #root {
-    /* position: relative; ← REMOVED - breaks fixed positioning */
   }
 }
 
