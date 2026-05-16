@@ -1,9 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 
-/**
- * Magnetic cursor + trail positions.
- * Cursor is pulled toward hovered element center; trail array for trailing dots.
- */
 const LERP = 0.12;
 const TRAIL_LENGTH = 8;
 const MAGNET_STRENGTH = 0.35;
@@ -17,7 +13,8 @@ export function useCursor() {
   const [visible, setVisible] = useState(false);
   const target = useRef({ x: -100, y: -100 });
   const current = useRef({ x: -100, y: -100 });
-  const magnetTarget = useRef(null); // { x, y } or null
+  const magnetTarget = useRef(null);
+  const isHoverRef = useRef(false);
   const trailRef = useRef([]);
   const rafRef = useRef(null);
 
@@ -27,7 +24,7 @@ export function useCursor() {
 
     const handleMove = (e) => {
       target.current = { x: e.clientX, y: e.clientY };
-      if (!visible) setVisible(true);
+      setVisible(true);
     };
 
     const handleLeave = () => {
@@ -38,6 +35,7 @@ export function useCursor() {
     const handleOver = (e) => {
       const el = e.target.closest(HOVER_SELECTORS);
       if (el) {
+        isHoverRef.current = true;
         setIsHover(true);
         const rect = el.getBoundingClientRect();
         magnetTarget.current = {
@@ -45,12 +43,14 @@ export function useCursor() {
           y: rect.top + rect.height / 2,
         };
       } else {
+        isHoverRef.current = false;
         setIsHover(false);
         magnetTarget.current = null;
       }
     };
 
     const handleOut = () => {
+      isHoverRef.current = false;
       setIsHover(false);
       magnetTarget.current = null;
     };
@@ -62,7 +62,7 @@ export function useCursor() {
       let dy = ty - c.y;
 
       const magnet = magnetTarget.current;
-      if (magnet && isHover) {
+      if (magnet && isHoverRef.current) {
         const toCenterX = magnet.x - c.x;
         const toCenterY = magnet.y - c.y;
         const dist = Math.hypot(toCenterX, toCenterY);
@@ -94,7 +94,7 @@ export function useCursor() {
       document.removeEventListener('mouseout', handleOut);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [visible, isHover]);
+  }, []);
 
   return { pos, trail, isHover, visible };
 }
