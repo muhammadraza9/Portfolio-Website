@@ -11,10 +11,12 @@ export function useCursor() {
   const [trail, setTrail] = useState([]);
   const [isHover, setIsHover] = useState(false);
   const [visible, setVisible] = useState(false);
+
   const target = useRef({ x: -100, y: -100 });
   const current = useRef({ x: -100, y: -100 });
   const magnetTarget = useRef(null);
   const isHoverRef = useRef(false);
+  const visibleRef = useRef(false);
   const trailRef = useRef([]);
   const rafRef = useRef(null);
 
@@ -24,10 +26,14 @@ export function useCursor() {
 
     const handleMove = (e) => {
       target.current = { x: e.clientX, y: e.clientY };
-      setVisible(true);
+      if (!visibleRef.current) {
+        visibleRef.current = true;
+        setVisible(true);
+      }
     };
 
     const handleLeave = () => {
+      visibleRef.current = false;
       setVisible(false);
       magnetTarget.current = null;
     };
