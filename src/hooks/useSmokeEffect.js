@@ -1,16 +1,11 @@
 import { useRef, useEffect, useCallback } from 'react';
 
-/**
- * Dual VFX: (1) Ambient floating orbs, (2) Cursor-reactive brush/dust strokes.
- * Brush particles are drawn as ellipses in velocity direction for a wispy trail.
- */
 const THROTTLE_MS = 16;
 const CURSOR_PARTICLE_COUNT = 70;
 const CURSOR_LIFESPAN = 90;
 const VELOCITY_MULTIPLIER = 0.22;
 const MAX_VEL = 14;
 const AMBIENT_ORB_COUNT = 10;
-const AMBIENT_SPEED = 0.3;
 const AMBIENT_SIZE = 180;
 
 function isLowEndDevice() {
@@ -22,7 +17,7 @@ function isLowEndDevice() {
 
 export function useSmokeEffect() {
   const canvasRef = useRef(null);
-  const mouseRef = useRef({ x: 0, y: 0, vx: 0, vy: 0, lastX: 0, lastY: 0 });
+  const mouseRef = useRef({ x: -200, y: -200, vx: 0, vy: 0, lastX: -200, lastY: -200 });
   const particlesRef = useRef([]);
   const ambientRef = useRef([]);
   const rafRef = useRef(null);
@@ -70,12 +65,17 @@ export function useSmokeEffect() {
     const ctx = canvas.getContext('2d');
     let width = window.innerWidth;
     let height = window.innerHeight;
+    // Fix: use dpr=1 always so coordinates match clientX/Y exactly
+    const dpr = 1;
 
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.scale(dpr, dpr);
     };
     resize();
     window.addEventListener('resize', resize);
@@ -84,7 +84,6 @@ export function useSmokeEffect() {
       timeRef.current += 0.016;
       const t = timeRef.current;
 
-      // Clear with slight fade for trail effect (optional: use alpha for persistence)
       ctx.clearRect(0, 0, width, height);
 
       const { x: mx, y: my, vx, vy } = mouseRef.current;
@@ -109,7 +108,7 @@ export function useSmokeEffect() {
         ctx.fill();
       }
 
-      // ---- Layer 2: Cursor brush / dust (ellipses in velocity direction) ----
+      // ---- Layer 2: Cursor brush / dust ----
       const particles = particlesRef.current;
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
@@ -130,8 +129,8 @@ export function useSmokeEffect() {
         const alpha = (lifeT * lifeT) * 0.2;
         const len = Math.min(80, 20 + Math.hypot(p.vx, p.vy) * 2);
         const r = p.size * (0.4 + 0.6 * lifeT);
-
         const angle = Math.atan2(p.vy, p.vx);
+
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(angle);

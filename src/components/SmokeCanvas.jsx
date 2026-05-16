@@ -1,9 +1,5 @@
 import { useSmokeEffect } from '../hooks/useSmokeEffect';
 
-/**
- * Full-viewport canvas that renders subtle smoke/fog following the cursor.
- * Positioned fixed so it sits above background but below content (pointer-events: none).
- */
 export default function SmokeCanvas() {
   const { canvasRef, disabled } = useSmokeEffect();
 
@@ -12,9 +8,17 @@ export default function SmokeCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none"
       aria-hidden="true"
-      style={{ background: 'transparent' }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 0,
+        pointerEvents: 'none',
+        background: 'transparent',
+      }}
     />
   );
 }
