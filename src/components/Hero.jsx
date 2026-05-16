@@ -87,8 +87,8 @@ export default function Hero() {
             Get in Touch
           </a>
           <a
-            href="/Muhammad Raza. Resume.pdf"
-            download="Muhammad Raza. Resume.pdf"
+            href="/Muhammad_Raza_Resume.pdf"
+            download="Muhammad_Raza_Resume.pdf"
             className="px-6 py-3 rounded-xl glass-card border border-white/20 hover:border-primary/50 text-white font-medium transition-colors"
           >
             Download Resume
