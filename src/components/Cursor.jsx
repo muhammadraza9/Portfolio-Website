@@ -1,65 +1,71 @@
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useCursor } from '../hooks/useCursor';
 
 export default function Cursor() {
   const { pos, trail, isHover, visible } = useCursor();
 
+  useEffect(() => {
+    if (visible) document.body.classList.add('custom-cursor-active');
+    else document.body.classList.remove('custom-cursor-active');
+    return () => document.body.classList.remove('custom-cursor-active');
+  }, [visible]);
+
   if (!visible) return null;
 
   return (
-    <>
+    <div
+      className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]"
+      aria-hidden="true"
+    >
       {/* Trail dots */}
       {trail.map((p, i) => (
-        <div
+        <motion.div
           key={i}
+          className="absolute rounded-full bg-secondary"
           style={{
-            position: 'fixed',
             left: p.x,
             top: p.y,
-            width: Math.max(2, 5 - i * 0.5),
-            height: Math.max(2, 5 - i * 0.5),
-            borderRadius: '50%',
-            background: `rgba(139, 92, 246, ${0.6 - (i / trail.length) * 0.55})`,
-            transform: 'translate(-50%, -50%)',
-            pointerEvents: 'none',
-            zIndex: 9998,
+            x: '-50%',
+            y: '-50%',
+            width: 6 - i * 0.5,
+            height: 6 - i * 0.5,
+            opacity: 0.6 - (i / trail.length) * 0.55,
           }}
         />
       ))}
 
       {/* Glow orb */}
-      <div
+      <motion.div
+        className="absolute rounded-full bg-primary"
         style={{
-          position: 'fixed',
           left: pos.x,
           top: pos.y,
-          width: isHover ? 44 : 24,
-          height: isHover ? 44 : 24,
-          borderRadius: '50%',
-          background: 'rgba(99, 102, 241, 0.15)',
-          border: '1.5px solid rgba(99, 102, 241, 0.7)',
-          boxShadow: '0 0 12px rgba(99,102,241,0.5)',
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-          zIndex: 9999,
-          transition: 'width 0.18s ease, height 0.18s ease',
+          x: '-50%',
+          y: '-50%',
+          width: isHover ? 56 : 24,
+          height: isHover ? 56 : 24,
+          boxShadow: isHover
+            ? '0 0 40px 12px rgba(99, 102, 241, 0.4), 0 0 80px 24px rgba(139, 92, 246, 0.2)'
+            : '0 0 20px 6px rgba(99, 102, 241, 0.25)',
         }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
       />
 
       {/* Inner dot */}
-      <div
+      <motion.div
+        className="absolute rounded-full bg-white"
         style={{
-          position: 'fixed',
           left: pos.x,
           top: pos.y,
-          width: 5,
-          height: 5,
-          borderRadius: '50%',
-          background: 'white',
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-          zIndex: 10000,
+          x: '-50%',
+          y: '-50%',
+          width: isHover ? 6 : 4,
+          height: isHover ? 6 : 4,
         }}
+        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
       />
-    </>
+    </div>
   );
 }
