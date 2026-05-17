@@ -36,18 +36,27 @@ export function useCursor() {
     const handleLeave = () => setVisible(false);
     const handleEnter = () => setVisible(true);
 
-    // Mobile touch
+    // Mobile — touchend pe cursor NAHI hatao, last position pe rehne do
     const handleTouchStart = (e) => {
       const t = e.touches[0];
-      if (t) updatePosition(t.clientX, t.clientY);
+      if (!t) return;
+      target.current = { x: t.clientX, y: t.clientY };
+      current.current = { x: t.clientX, y: t.clientY };
+      setPos({ x: t.clientX, y: t.clientY });
+      setVisible(true);
     };
+
     const handleTouchMove = (e) => {
       const t = e.touches[0];
-      if (t) updatePosition(t.clientX, t.clientY);
+      if (!t) return;
+      updatePosition(t.clientX, t.clientY);
     };
-    const handleTouchEnd = () => setVisible(false);
 
-    // Hover — desktop only
+    // touchend — cursor last position pe RUKE, gayab na ho
+    const handleTouchEnd = () => {
+      // visible true rakhein — cursor last position pe dikhta rahe
+    };
+
     const handleOver = (e) => {
       const el = e.target.closest(HOVER_SELECTORS);
       if (el) {
