@@ -41,26 +41,12 @@
   background: #8b5cf6;
 }
 
-/* Hide default cursor when custom cursor is active (desktop only) */
-.custom-cursor-active,
-.custom-cursor-active * {
+/* Hide default cursor on all devices */
+html, html * {
   cursor: none !important;
 }
 
-/* Hide native cursor before JS loads on Vercel (desktop only) */
-@media (hover: hover) and (pointer: fine) {
-  html, html * {
-    cursor: none !important;
-  }
-}
-
-/* Mobile — restore native touch cursor */
-@media (hover: none), (pointer: coarse) {
-  html, html * {
-    cursor: auto !important;
-  }
-  .custom-cursor-active,
-  .custom-cursor-active * {
-    cursor: auto !important;
-  }
+.custom-cursor-active,
+.custom-cursor-active * {
+  cursor: none !important;
 }

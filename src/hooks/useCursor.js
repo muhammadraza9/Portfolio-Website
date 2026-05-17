@@ -11,7 +11,6 @@ export function useCursor() {
   const [trail, setTrail] = useState([]);
   const [isHover, setIsHover] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   const target = useRef(null);
   const current = useRef(null);
@@ -21,30 +20,38 @@ export function useCursor() {
   const rafRef = useRef(null);
 
   useEffect(() => {
-    // Mobile check — touch device pe cursor nahi chalega
-    const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-    if (isTouch) {
-      setIsMobile(true);
-      return;
-    }
-
+    // Mouse move — desktop
     const handleMove = (e) => {
       const x = e.clientX;
       const y = e.clientY;
-
       if (target.current === null) {
         target.current = { x, y };
         current.current = { x, y };
         setPos({ x, y });
-        setVisible(true);
       } else {
         target.current = { x, y };
-        setVisible(true);
       }
+      setVisible(true);
+    };
+
+    // Touch move — mobile
+    const handleTouch = (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      const x = touch.clientX;
+      const y = touch.clientY;
+      if (target.current === null) {
+        target.current = { x, y };
+        current.current = { x, y };
+        setPos({ x, y });
+      } else {
+        target.current = { x, y };
+      }
+      setVisible(true);
     };
 
     const handleLeave = () => setVisible(false);
-    const handleEnter = () => setVisible(true);
+    const handleTouchEnd = () => setVisible(false);
 
     const handleOver = (e) => {
       const el = e.target.closest(HOVER_SELECTORS);
@@ -104,14 +111,16 @@ export function useCursor() {
 
     window.addEventListener('mousemove', handleMove, { passive: true });
     window.addEventListener('mouseleave', handleLeave);
-    window.addEventListener('mouseenter', handleEnter);
+    window.addEventListener('touchmove', handleTouch, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
     document.addEventListener('mouseover', handleOver, { passive: true });
     document.addEventListener('mouseout', handleOut, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseleave', handleLeave);
-      window.removeEventListener('mouseenter', handleEnter);
+      window.removeEventListener('touchmove', handleTouch);
+      window.removeEventListener('touchend', handleTouchEnd);
       document.removeEventListener('mouseover', handleOver);
       document.removeEventListener('mouseout', handleOut);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -119,5 +128,5 @@ export function useCursor() {
     };
   }, []);
 
-  return { pos, trail, isHover, visible, isMobile };
+  return { pos, trail, isHover, visible };
 }

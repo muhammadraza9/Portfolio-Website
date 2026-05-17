@@ -3,9 +3,8 @@ import { motion, useSpring } from 'framer-motion';
 import { useCursor } from '../hooks/useCursor';
 
 export default function Cursor() {
-  const { pos, trail, isHover, visible, isMobile } = useCursor();
+  const { pos, trail, isHover, visible } = useCursor();
 
-  // Smooth spring zoom on hover
   const size = useSpring(24, { stiffness: 250, damping: 22 });
 
   useEffect(() => {
@@ -18,8 +17,7 @@ export default function Cursor() {
     return () => document.body.classList.remove('custom-cursor-active');
   }, [visible]);
 
-  // Mobile pe cursor render mat karo
-  if (isMobile || !visible) return null;
+  if (!visible) return null;
 
   return (
     <div
@@ -43,7 +41,7 @@ export default function Cursor() {
         />
       ))}
 
-      {/* Glow orb — spring zoom on hover */}
+      {/* Glow orb */}
       <motion.div
         className="absolute rounded-full bg-primary"
         style={{
