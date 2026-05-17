@@ -20,14 +20,21 @@ export function useCursor() {
   const rafRef = useRef(null);
 
   useEffect(() => {
-    const isTouch = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouch()) return;
+    // FIX 1: Only skip on PURE touch devices (no mouse ever detected)
+    // Don't use maxTouchPoints alone — hybrid devices fail here
+    let hasMouse = false;
+
+    const detectMouse = () => {
+      hasMouse = true;
+      document.removeEventListener('mousemove', detectMouse);
+    };
+    document.addEventListener('mousemove', detectMouse, { once: true });
 
     const handleMove = (e) => {
+      hasMouse = true; // reinforce
       const x = e.clientX;
       const y = e.clientY;
 
-      // Pehli baar — seedha set karo, LERP mat karo
       if (target.current === null) {
         target.current = { x, y };
         current.current = { x, y };
@@ -39,9 +46,7 @@ export function useCursor() {
       setVisible(true);
     };
 
-    const handleLeave = () => {
-      setVisible(false);
-    };
+    const handleLeave = () => setVisible(false);
 
     const handleOver = (e) => {
       const el = e.target.closest(HOVER_SELECTORS);
@@ -95,12 +100,16 @@ export function useCursor() {
 
       rafRef.current = requestAnimationFrame(animate);
     };
+
     rafRef.current = requestAnimationFrame(animate);
 
     document.addEventListener('mousemove', handleMove, { passive: true });
     document.addEventListener('mouseleave', handleLeave);
-    document.addEventListener('mouseover', handleOver);
-    document.addEventListener('mouseout', handleOut);
+    document.addEventListener('mouseover', handleOver, { passive: true });
+    document.addEventListener('mouseout', handleOut, { passive: true });
+
+    // FIX 2: Hide native cursor globally via JS (in case global CSS is missing)
+    document.documentElement.style.cursor = 'none';
 
     return () => {
       document.removeEventListener('mousemove', handleMove);
@@ -108,6 +117,9 @@ export function useCursor() {
       document.removeEventListener('mouseover', handleOver);
       document.removeEventListener('mouseout', handleOut);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+      // Restore cursor on unmount
+      document.documentElement.style.cursor = '';
     };
   }, []);
 

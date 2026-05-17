@@ -1,20 +1,21 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function Cursor() {
-  const canvasRef = useRef(null);
-
   useEffect(() => {
-    const isTouch = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (isTouch()) return;
+    // FIX 1: Don't block on hybrid devices — wait for actual mouse input
+    let hasMouse = false;
+    let rafId = null;
 
     const canvas = document.createElement('canvas');
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100vw';
-    canvas.style.height = '100vh';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '9999';
+    canvas.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    `;
     document.body.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
@@ -28,33 +29,41 @@ export default function Cursor() {
     const trail = [];
     let visible = false;
 
-    window.addEventListener('resize', () => {
+    // FIX 2: Resize — update both canvas pixel size AND W/H
+    const handleResize = () => {
       W = window.innerWidth;
       H = window.innerHeight;
-      canvas.width = W;
+      canvas.width = W;   // resets canvas — must redraw next frame
       canvas.height = H;
-    });
+    };
 
-    document.addEventListener('mousemove', (e) => {
+    const handleMouseMove = (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-      if (!visible) {
+
+      if (!hasMouse) {
+        hasMouse = true;
+        // Snap current to mouse on first move so cursor doesn't slide in from (-500, -500)
         current.x = e.clientX;
         current.y = e.clientY;
+      }
+
+      if (!visible) {
         visible = true;
         document.body.classList.add('custom-cursor-active');
       }
-    });
+    };
 
-    document.addEventListener('mouseleave', () => {
+    const handleMouseLeave = () => {
       visible = false;
       document.body.classList.remove('custom-cursor-active');
-    });
+    };
 
+    // FIX 3: Cancel previous RAF and store new ID each frame
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
 
-      if (visible) {
+      if (visible && hasMouse) {
         current.x += (mouse.x - current.x) * 0.15;
         current.y += (mouse.y - current.y) * 0.15;
 
@@ -72,7 +81,10 @@ export default function Cursor() {
         });
 
         // Glow orb
-        const gradient = ctx.createRadialGradient(current.x, current.y, 0, current.x, current.y, 20);
+        const gradient = ctx.createRadialGradient(
+          current.x, current.y, 0,
+          current.x, current.y, 20
+        );
         gradient.addColorStop(0, 'rgba(99, 102, 241, 0.9)');
         gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
         ctx.beginPath();
@@ -87,12 +99,30 @@ export default function Cursor() {
         ctx.fill();
       }
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw); // FIX 3: store ID
     };
-    draw();
+
+    rafId = requestAnimationFrame(draw);
+
+    // FIX 4: Use named functions so they can be properly removed
+    window.addEventListener('resize', handleResize, { passive: true });
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      document.body.removeChild(canvas);
+      // FIX 3: Cancel animation loop on unmount
+      if (rafId) cancelAnimationFrame(rafId);
+
+      // FIX 4: Remove all listeners
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+
+      // Safe removal (canvas may already be gone in strict mode double-invoke)
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+
       document.body.classList.remove('custom-cursor-active');
     };
   }, []);

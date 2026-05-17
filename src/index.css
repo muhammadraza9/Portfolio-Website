@@ -8,9 +8,20 @@
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-dark text-white font-sans antialiased;
     background-color: #0a0a0f;
+  }
+
+  /* FIX 1: Hide native cursor globally on non-touch devices.
+     The media query (hover: hover) targets real pointer devices only,
+     so phones and tablets keep their native cursor behaviour. */
+  @media (hover: hover) and (pointer: fine) {
+    html,
+    html * {
+      cursor: none !important;
+    }
   }
 }
 
@@ -20,6 +31,7 @@
   }
 }
 
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -34,6 +46,10 @@
   background: #8b5cf6;
 }
 
+/* ─── Custom cursor active state (set by JS) ────────────────────── */
+/* FIX 2: Kept as fallback, but the media-query rule above now does
+   the heavy lifting before JS even loads — eliminating the flash of
+   native cursor on first paint that happens on Vercel. */
 .custom-cursor-active,
 .custom-cursor-active * {
   cursor: none !important;
