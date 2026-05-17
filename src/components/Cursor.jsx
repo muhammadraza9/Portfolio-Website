@@ -1,9 +1,16 @@
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useSpring } from 'framer-motion';
 import { useCursor } from '../hooks/useCursor';
 
 export default function Cursor() {
-  const { pos, trail, isHover, visible } = useCursor();
+  const { pos, trail, isHover, visible, isMobile } = useCursor();
+
+  // Smooth spring zoom on hover
+  const size = useSpring(24, { stiffness: 250, damping: 22 });
+
+  useEffect(() => {
+    size.set(isHover ? 64 : 24);
+  }, [isHover]);
 
   useEffect(() => {
     if (visible) document.body.classList.add('custom-cursor-active');
@@ -11,7 +18,8 @@ export default function Cursor() {
     return () => document.body.classList.remove('custom-cursor-active');
   }, [visible]);
 
-  if (!visible) return null;
+  // Mobile pe cursor render mat karo
+  if (isMobile || !visible) return null;
 
   return (
     <div
@@ -28,14 +36,14 @@ export default function Cursor() {
             top: p.y,
             x: '-50%',
             y: '-50%',
-            width: 6 - i * 0.5,
-            height: 6 - i * 0.5,
+            width: Math.max(2, 6 - i * 0.5),
+            height: Math.max(2, 6 - i * 0.5),
             opacity: 0.6 - (i / trail.length) * 0.55,
           }}
         />
       ))}
 
-      {/* Glow orb */}
+      {/* Glow orb — spring zoom on hover */}
       <motion.div
         className="absolute rounded-full bg-primary"
         style={{
@@ -43,14 +51,13 @@ export default function Cursor() {
           top: pos.y,
           x: '-50%',
           y: '-50%',
-          width: isHover ? 56 : 24,
-          height: isHover ? 56 : 24,
+          width: size,
+          height: size,
+          opacity: isHover ? 0.85 : 0.6,
           boxShadow: isHover
             ? '0 0 40px 12px rgba(99, 102, 241, 0.4), 0 0 80px 24px rgba(139, 92, 246, 0.2)'
             : '0 0 20px 6px rgba(99, 102, 241, 0.25)',
         }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
       />
 
       {/* Inner dot */}

@@ -11,6 +11,7 @@ export function useCursor() {
   const [trail, setTrail] = useState([]);
   const [isHover, setIsHover] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const target = useRef(null);
   const current = useRef(null);
@@ -20,6 +21,13 @@ export function useCursor() {
   const rafRef = useRef(null);
 
   useEffect(() => {
+    // Mobile check — touch device pe cursor nahi chalega
+    const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (isTouch) {
+      setIsMobile(true);
+      return;
+    }
+
     const handleMove = (e) => {
       const x = e.clientX;
       const y = e.clientY;
@@ -92,11 +100,8 @@ export function useCursor() {
     };
 
     rafRef.current = requestAnimationFrame(animate);
-
-    // cursor none
     document.documentElement.style.cursor = 'none';
 
-    // window pe lagao — document pe nahi
     window.addEventListener('mousemove', handleMove, { passive: true });
     window.addEventListener('mouseleave', handleLeave);
     window.addEventListener('mouseenter', handleEnter);
@@ -114,5 +119,5 @@ export function useCursor() {
     };
   }, []);
 
-  return { pos, trail, isHover, visible };
+  return { pos, trail, isHover, visible, isMobile };
 }
