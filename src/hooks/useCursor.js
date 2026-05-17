@@ -20,18 +20,7 @@ export function useCursor() {
   const rafRef = useRef(null);
 
   useEffect(() => {
-    // FIX 1: Only skip on PURE touch devices (no mouse ever detected)
-    // Don't use maxTouchPoints alone — hybrid devices fail here
-    let hasMouse = false;
-
-    const detectMouse = () => {
-      hasMouse = true;
-      document.removeEventListener('mousemove', detectMouse);
-    };
-    document.addEventListener('mousemove', detectMouse, { once: true });
-
     const handleMove = (e) => {
-      hasMouse = true; // reinforce
       const x = e.clientX;
       const y = e.clientY;
 
@@ -103,13 +92,13 @@ export function useCursor() {
 
     rafRef.current = requestAnimationFrame(animate);
 
+    // Hide native cursor via JS as backup to CSS
+    document.documentElement.style.cursor = 'none';
+
     document.addEventListener('mousemove', handleMove, { passive: true });
     document.addEventListener('mouseleave', handleLeave);
     document.addEventListener('mouseover', handleOver, { passive: true });
     document.addEventListener('mouseout', handleOut, { passive: true });
-
-    // FIX 2: Hide native cursor globally via JS (in case global CSS is missing)
-    document.documentElement.style.cursor = 'none';
 
     return () => {
       document.removeEventListener('mousemove', handleMove);
@@ -117,8 +106,6 @@ export function useCursor() {
       document.removeEventListener('mouseover', handleOver);
       document.removeEventListener('mouseout', handleOut);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-
-      // Restore cursor on unmount
       document.documentElement.style.cursor = '';
     };
   }, []);
