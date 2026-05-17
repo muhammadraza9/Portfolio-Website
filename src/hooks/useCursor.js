@@ -28,14 +28,15 @@ export function useCursor() {
         target.current = { x, y };
         current.current = { x, y };
         setPos({ x, y });
+        setVisible(true);
       } else {
         target.current = { x, y };
+        setVisible(true);
       }
-
-      setVisible(true);
     };
 
     const handleLeave = () => setVisible(false);
+    const handleEnter = () => setVisible(true);
 
     const handleOver = (e) => {
       const el = e.target.closest(HOVER_SELECTORS);
@@ -92,17 +93,20 @@ export function useCursor() {
 
     rafRef.current = requestAnimationFrame(animate);
 
-    // Hide native cursor via JS as backup to CSS
+    // cursor none
     document.documentElement.style.cursor = 'none';
 
-    document.addEventListener('mousemove', handleMove, { passive: true });
-    document.addEventListener('mouseleave', handleLeave);
+    // window pe lagao — document pe nahi
+    window.addEventListener('mousemove', handleMove, { passive: true });
+    window.addEventListener('mouseleave', handleLeave);
+    window.addEventListener('mouseenter', handleEnter);
     document.addEventListener('mouseover', handleOver, { passive: true });
     document.addEventListener('mouseout', handleOut, { passive: true });
 
     return () => {
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('mouseleave', handleLeave);
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseleave', handleLeave);
+      window.removeEventListener('mouseenter', handleEnter);
       document.removeEventListener('mouseover', handleOver);
       document.removeEventListener('mouseout', handleOut);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
