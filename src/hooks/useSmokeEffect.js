@@ -17,7 +17,7 @@ function isLowEndDevice() {
 
 export function useSmokeEffect() {
   const canvasRef = useRef(null);
-  const mouseRef = useRef(null); // null jab tak move na ho
+  const mouseRef = useRef(null);
   const particlesRef = useRef([]);
   const ambientRef = useRef([]);
   const rafRef = useRef(null);
@@ -63,8 +63,6 @@ export function useSmokeEffect() {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-
-    // Canvas size = window size, no DPR scaling
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -79,14 +77,10 @@ export function useSmokeEffect() {
     };
     window.addEventListener('resize', resize);
 
-    // Mouse move — seedha clientX/Y canvas coordinates hain
-    const handleMove = (e) => {
+    const updateMouse = (x, y) => {
       const now = performance.now();
       if (now - lastThrottleRef.current < THROTTLE_MS) return;
       lastThrottleRef.current = now;
-
-      const x = e.clientX;
-      const y = e.clientY;
 
       if (mouseRef.current === null) {
         mouseRef.current = { x, y, vx: 0, vy: 0, lastX: x, lastY: y };
@@ -100,7 +94,29 @@ export function useSmokeEffect() {
       }
     };
 
+    // Desktop
+    const handleMove = (e) => updateMouse(e.clientX, e.clientY);
+
+    // Mobile — window pe attach, velocity reset on touchstart
+    const handleTouchStart = (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      mouseRef.current = {
+        x: t.clientX, y: t.clientY,
+        vx: 0, vy: 0,
+        lastX: t.clientX, lastY: t.clientY,
+      };
+    };
+
+    const handleTouchMove = (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      updateMouse(t.clientX, t.clientY);
+    };
+
     window.addEventListener('mousemove', handleMove, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     const draw = () => {
       timeRef.current += 0.016;
@@ -108,7 +124,7 @@ export function useSmokeEffect() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // ---- Ambient orbs ----
+      // Ambient orbs
       const orbs = ambientRef.current;
       for (let i = 0; i < orbs.length; i++) {
         const o = orbs[i];
@@ -126,7 +142,7 @@ export function useSmokeEffect() {
         ctx.fill();
       }
 
-      // ---- Cursor smoke — sirf tab jab mouse move hua ho ----
+      // Cursor smoke
       if (mouseRef.current !== null) {
         const { x: mx, y: my, vx, vy } = mouseRef.current;
         const vxClamp = Math.max(-MAX_VEL, Math.min(MAX_VEL, vx));
@@ -176,6 +192,8 @@ export function useSmokeEffect() {
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);

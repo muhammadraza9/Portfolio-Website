@@ -31,7 +31,7 @@ export function useCursor() {
       setVisible(true);
     };
 
-    // Desktop mouse
+    // Desktop
     const handleMove = (e) => updatePosition(e.clientX, e.clientY);
     const handleLeave = () => setVisible(false);
     const handleEnter = () => setVisible(true);
@@ -39,19 +39,15 @@ export function useCursor() {
     // Mobile touch
     const handleTouchStart = (e) => {
       const t = e.touches[0];
-      if (!t) return;
-      updatePosition(t.clientX, t.clientY);
+      if (t) updatePosition(t.clientX, t.clientY);
     };
-
     const handleTouchMove = (e) => {
       const t = e.touches[0];
-      if (!t) return;
-      updatePosition(t.clientX, t.clientY);
+      if (t) updatePosition(t.clientX, t.clientY);
     };
-
     const handleTouchEnd = () => setVisible(false);
 
-    // Hover detection (desktop only)
+    // Hover — desktop only
     const handleOver = (e) => {
       const el = e.target.closest(HOVER_SELECTORS);
       if (el) {
@@ -108,27 +104,24 @@ export function useCursor() {
     rafRef.current = requestAnimationFrame(animate);
     document.documentElement.style.cursor = 'none';
 
-    // Desktop
     window.addEventListener('mousemove', handleMove, { passive: true });
     window.addEventListener('mouseleave', handleLeave);
     window.addEventListener('mouseenter', handleEnter);
-    document.addEventListener('mouseover', handleOver, { passive: true });
-    document.addEventListener('mouseout', handleOut, { passive: true });
-
-    // Mobile
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
     window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener('mouseover', handleOver, { passive: true });
+    document.addEventListener('mouseout', handleOut, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseleave', handleLeave);
       window.removeEventListener('mouseenter', handleEnter);
-      document.removeEventListener('mouseover', handleOver);
-      document.removeEventListener('mouseout', handleOut);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('mouseover', handleOver);
+      document.removeEventListener('mouseout', handleOut);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       document.documentElement.style.cursor = '';
     };
