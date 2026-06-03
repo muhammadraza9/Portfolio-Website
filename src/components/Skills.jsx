@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 const SKILLS = [
    'React.js',
   'Next.js',
+  'Node.js',
   'JavaScript',
   'TypeScript',
   'HTML5',
