@@ -27,7 +27,7 @@ const PROJECTS = [
      description: `A full-featured ecommerce platform with product browsing, cart, and secure checkout functionality. Includes user authentication, role-based admin dashboard for managing products, orders, and users. Integrated with payment gateways and order tracking system. Built with a scalable backend architecture using Prisma ORM and MySQL.`,
     tags: ['Next.js', 'React.js', 'Node.js', 'Express.js', 'Prisma', 'MySQL', 'Tailwind CSS'],
     highlight: true,
-    image: '/images/ecommerce-store.png',
+    image: '/images/e-commerce.png',
     liveLink: 'https://e-commerce-style-avenue.vercel.app/',
     githubLink: ''
  },
