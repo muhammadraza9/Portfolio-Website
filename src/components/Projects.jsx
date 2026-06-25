@@ -13,9 +13,9 @@ const PROJECTS = [
   {
     title: '📰 News App',
     description: `A dynamic news application that fetches real-time data from a public News API.
-Users can explore the latest news across multiple categories like technology, sports, and business.
-It includes smooth navigation and fast loading for better user experience.
-Designed with a clean and responsive UI for all devices.`,
+    Users can explore the latest news across multiple categories like technology, sports,    and business.
+    It includes smooth navigation and fast loading for better user experience.
+    Designed with a clean and responsive UI for all devices.`,
     tags: ['React.js', 'Bootstrap', 'REST API'],
     highlight: true,
     image: '/images/news-app.png',
@@ -23,23 +23,20 @@ Designed with a clean and responsive UI for all devices.`,
     githubLink: ''
   },
   {
-    title: '🎓 CUVAS Admission System (FYP)',
-    description: `A student admission management system designed to handle application records efficiently.
-It allows users to submit, track, and manage admission data in a structured way.
-The system includes validation and organized workflows for smooth processing.
-Built with backend integration and database support for reliable data handling.`,
-    tags: ['Laravel', 'MySQL'],
+     title: '🛒 Style Avenue - Ecommerce Store',
+     description: `A full-featured ecommerce platform with product browsing, cart, and secure checkout functionality. Includes user authentication, role-based admin dashboard for managing products, orders, and users. Integrated with payment gateways and order tracking system. Built with a scalable backend architecture using Prisma ORM and MySQL.`,
+    tags: ['Next.js', 'React.js', 'Node.js', 'Express.js', 'Prisma', 'MySQL', 'Tailwind CSS'],
     highlight: true,
-    image: '/images/admission.png',
-    liveLink: '',
+    image: '/images/ecommerce-store.png',
+    liveLink: 'https://e-commerce-style-avenue.vercel.app/',
     githubLink: ''
-  },
+ },
   {
     title: '📝 TextUtils',
     description: `A simple and efficient text utility tool for formatting and analyzing text.
-It provides features like uppercase, lowercase conversion, and word/character counting.
-Users can quickly manipulate text with instant results in a clean interface.
-Built for fast performance with a lightweight and responsive design.`,
+    It provides features like uppercase, lowercase conversion, and word/character counting.
+    Users can quickly manipulate text with instant results in a clean interface.
+    Built for fast performance with a lightweight and responsive design.`,
     tags: ['React.js'],
     highlight: true,
     image: '/images/textutils.png',
@@ -49,13 +46,25 @@ Built for fast performance with a lightweight and responsive design.`,
   {
     title: '📚 Book Hub',
     description: `A personal book management application for organizing and storing book collections.
-Users can add, edit, and delete books to keep their library well organized.
-It uses local storage to persist data without requiring a backend server.
-Designed with a simple and clean interface for easy and fast usage.`,
+    Users can add, edit, and delete books to keep their library well organized.
+    It uses local storage to persist data without requiring a backend server.
+    Designed with a simple and clean interface for easy and fast usage.`,
     tags: ['React.js'],
     highlight: true,
     image: '/images/bookhub.png',
     liveLink: 'https://book-hub-hazel.vercel.app/',
+    githubLink: ''
+  },
+   {
+    title: '🎓 CUVAS Admission System (FYP)',
+    description: `A student admission management system designed to handle application records efficiently.
+    It allows users to submit, track, and manage admission data in a structured way.
+    The system includes validation and organized workflows for smooth processing.
+    Built with backend integration and database support for reliable data handling.`,
+    tags: ['Laravel', 'MySQL'],
+    highlight: true,
+    image: '/images/admission.png',
+    liveLink: '',
     githubLink: ''
   },
 ];
