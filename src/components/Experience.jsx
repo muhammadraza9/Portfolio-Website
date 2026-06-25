@@ -30,11 +30,11 @@ export default function Experience() {
         >
           <div>
             <h3 className="text-xl font-semibold text-white">
-              Frontend Developer Intern — React & Next.js
+              Frontend Developer — React & Next.js
             </h3>
 
             <p className="text-primary mt-1">
-              Ali Square, Islamabad | Dec 2025 – Feb 2026
+              Ali Square, Islamabad | Present
             </p>
           </div>
 
